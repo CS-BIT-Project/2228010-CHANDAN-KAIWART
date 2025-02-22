@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="ring">
+            <corners android:radius="160dp" />
+            <solid android:color="#0000" /> <!-- Change color as needed -->
+            <padding android:left="8dp" android:right="8dp" android:top="8dp" android:bottom="8dp" />
+        </shape>
+    </item>
+</selector>

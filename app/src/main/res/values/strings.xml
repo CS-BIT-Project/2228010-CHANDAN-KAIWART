@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name" translatable="false">My Application</string>
+    <string name="_25_5k_likes" translatable="false">25.5k likes</string>
+
+</resources>
