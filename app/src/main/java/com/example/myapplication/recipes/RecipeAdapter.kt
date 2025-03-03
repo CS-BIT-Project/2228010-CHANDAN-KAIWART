@@ -12,7 +12,8 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.ui.PlayerView
 
-class RecipeAdapter(private val recipes: List<Recipe>) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
+class RecipeAdapter(private var recipes: MutableList<Recipe>) :
+    RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
     inner class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val recipeImage: ImageView = itemView.findViewById(R.id.recipeImage)
@@ -29,17 +30,35 @@ class RecipeAdapter(private val recipes: List<Recipe>) : RecyclerView.Adapter<Re
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val recipe = recipes[position]
 
+        // Set recipe title and image
         holder.recipeTitle.text = recipe.title
         Glide.with(holder.itemView.context).load(recipe.image).into(holder.recipeImage)
 
         if (!recipe.videoUrl.isNullOrEmpty()) {
-            holder.exoPlayer = ExoPlayer.Builder(holder.itemView.context).build()
+            holder.playerView.visibility = View.VISIBLE
+            holder.exoPlayer = ExoPlayer.Builder(holder.itemView.context).build().apply {
+                setMediaItem(MediaItem.fromUri(recipe.videoUrl))
+                prepare()
+                playWhenReady = false
+            }
             holder.playerView.player = holder.exoPlayer
-            val mediaItem = MediaItem.fromUri(recipe.videoUrl)
-            holder.exoPlayer?.setMediaItem(mediaItem)
-            holder.exoPlayer?.prepare()
+        } else {
+            holder.playerView.visibility = View.GONE
         }
     }
 
     override fun getItemCount() = recipes.size
+
+    override fun onViewRecycled(holder: RecipeViewHolder) {
+        super.onViewRecycled(holder)
+        holder.exoPlayer?.release() // Release player when view is recycled
+        holder.exoPlayer = null
+    }
+
+    // ✅ Add this method to update adapter data
+    fun updateData(newRecipes: List<Recipe>) {
+        recipes.clear()  // Clear old data
+        recipes.addAll(newRecipes) // Add new data
+        notifyDataSetChanged() // Refresh RecyclerView
+    }
 }

@@ -1,8 +1,12 @@
 package com.example.myapplication.recipes
 
+import com.google.gson.annotations.SerializedName
+
 data class Recipe(
-    val id: Int,
-    val title: String,
-    val image: String,
-    val videoUrl: String?
+    @SerializedName("title") val title: String,
+    @SerializedName("readyInMinutes") val readyInMinutes: Int,
+    @SerializedName("spoonacularScore") val spoonacularScore: Float?,
+    @SerializedName("image") val image: String?,
+    @SerializedName("videoUrl") val videoUrl: String?
+
 )

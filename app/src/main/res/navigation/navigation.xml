@@ -5,9 +5,17 @@
     app:startDestination="@id/navigation_home">
 
     <fragment
+        android:id="@+id/navigation_home"
+        android:label="Search"
+        tools:layout="@layout/home_page" />
+    <fragment
         android:id="@+id/navigation_search"
         android:label="Search"
         tools:layout="@layout/search_page" />
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:label="Search"
+        tools:layout="@layout/profile_page" />
 
 
 </navigation>

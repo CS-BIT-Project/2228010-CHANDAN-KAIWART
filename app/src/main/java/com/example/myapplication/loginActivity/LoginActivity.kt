@@ -11,23 +11,30 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.MainActivity
 import com.example.myapplication.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var btnLogin: Button
     private lateinit var btnSignUp: Button
     private lateinit var formContainer: FrameLayout
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Check if user is already logged in
-        if (FirebaseAuth.getInstance().currentUser != null) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-            return
-        }
-        setContentView(R.layout.activity_login)
+        firebaseAuth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+
+//        if (FirebaseAuth.getInstance().currentUser == null) {
+//            showLoginForm()
+//        } else {
+//            startActivity(Intent(this, MainActivity::class.java))
+//            finish()
+//        }
+        FirebaseAuth.getInstance().signOut()
+            setContentView(R.layout.activity_login)
 
         btnLogin = findViewById(R.id.btnLogin)
         btnSignUp = findViewById(R.id.btnSignUp)
@@ -53,12 +60,12 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString().trim()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
                             startActivity(Intent(this, MainActivity::class.java))
-                            finish() // Close LoginActivity
+                            finish()
                         } else {
                             Toast.makeText(this, "Login Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -69,7 +76,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
     private fun showSignUpForm() {
         val signUpForm = LayoutInflater.from(this).inflate(R.layout.form_signup, formContainer, false)
         formContainer.removeAllViews()
@@ -77,27 +83,40 @@ class LoginActivity : AppCompatActivity() {
 
         val etEmail = signUpForm.findViewById<EditText>(R.id.etEmail)
         val etPassword = signUpForm.findViewById<EditText>(R.id.etPassword)
+        val etUserName = signUpForm.findViewById<EditText>(R.id.etUserName)
         val btnSubmit = signUpForm.findViewById<Button>(R.id.btnSubmit)
 
         btnSubmit.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
+            val username = etUserName.text.toString().trim()
 
-            if (email.isNotEmpty() && password.length >= 6) {
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            if (email.isNotEmpty() && password.length >= 6 && username.isNotEmpty()) {
+                firebaseAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Toast.makeText(this, "Sign Up Successful", Toast.LENGTH_SHORT).show()
-                            showLoginForm() // Redirect to login form after successful registration
+                            val userId = firebaseAuth.currentUser?.uid ?: return@addOnCompleteListener
+                            val userMap = hashMapOf(
+                                "userId" to userId,
+                                "username" to username,
+                                "email" to email,
+                                "profileImageUrl" to ""
+                            )
+                            firestore.collection("users").document(userId).set(userMap)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Sign Up Successful", Toast.LENGTH_SHORT).show()
+                                    showLoginForm()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(this, "Database Error: ${it.message}", Toast.LENGTH_SHORT).show()
+                                }
                         } else {
                             Toast.makeText(this, "Sign Up Failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
-                Toast.makeText(this, "Please enter a valid email and password (6+ characters)", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter a valid email, password (6+ characters), and username", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
 }
-

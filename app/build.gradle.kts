@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.core.ktx.v1120)
     implementation(libs.androidx.appcompat.v161)
     implementation(libs.androidx.constraintlayout.v214)
+    implementation(libs.androidx.recyclerview)
 
     // Compose UI Dependencies
     implementation(libs.androidx.ui)
@@ -64,16 +65,22 @@ dependencies {
 
     // Image Processing (Glide)
     implementation(libs.glide.v4151)
+    implementation(libs.androidx.core)
+    annotationProcessor(libs.compiler.v4151)
+
+    // Navigation Components
     implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+
+    // Other AndroidX Dependencies
     implementation(libs.androidx.monitor)
     implementation(libs.androidx.junit.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation ("com.google.firebase:firebase-auth-ktx:22.3.1")
-    annotationProcessor(libs.compiler.v4151)
 
     // Networking (Retrofit) - REQUIRED for Spoonacular API
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // ViewModel & LiveData (For MVVM Architecture)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -81,15 +88,20 @@ dependencies {
 
     // Circle Image View (If needed)
     implementation(libs.circleimageview)
-    implementation (libs.material)
 
+    // Firebase Dependencies (🔥 Using BOM for compatibility)
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))  // 🔥 BOM automatically manages versions
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+
+    // ExoPlayer for video playback
+    implementation("com.google.android.exoplayer:exoplayer:2.19.1")
+
+    // Material & AppCompat
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 }
-
-dependencies {
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.github.bumptech.glide:glide:4.12.0")
-    implementation("com.google.android.exoplayer:exoplayer:2.18.5")
-}
-
-
