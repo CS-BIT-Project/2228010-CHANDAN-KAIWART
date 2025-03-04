@@ -5,4 +5,16 @@
     <string name="Settings">Settings</string>
     <string name="dropdown_icon">dropdownicon</string>
 
+    <string name="menu">Menu</string>
+    <string name="profile">Profile</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="saved">Saved</string>
+    <string name="featured_recipes">Featured Recipes</string>
+    <string name="popular_categories">Popular Categories</string>
+    <string name="quick_filters">Quick Filters</string>
+    <string name="trending_now">Trending Now</string>
+    <string name="recipe_image">Recipe image</string>
+    <string name="category_icon">Category icon</string>
+
 </resources>
