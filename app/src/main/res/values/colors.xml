@@ -28,4 +28,15 @@
     <color name="textSecondary">#757575</color>
     <color name="selected_color">#FF5722</color>
     <color name="unselected_color">#757575</color>
+
+    <color name="custom">#000000</color>
+    <color name="custom_light">#E6E6E6</color>
+    <color name="gray_50">#FAFAFA</color>
+    <color name="gray_100">#F5F5F5</color>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_300">#E0E0E0</color>
+    <color name="gray_400">#BDBDBD</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="yellow_400">#FFCE44</color>
+
 </resources>

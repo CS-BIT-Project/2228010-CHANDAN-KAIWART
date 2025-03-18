@@ -20,7 +20,7 @@ interface RecipeApiService {
     // Fetch random recipes
     @GET("recipes/random")
     suspend fun getRandomRecipes(
-        @Query("number") number: String ,
+        @Query("number") number: Int,
         @Query("apiKey") apiKey: String,
         @Query("tags") tags: String? = null
     ): Response<RandomRecipeResponse>

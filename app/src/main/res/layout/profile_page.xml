@@ -153,7 +153,16 @@
                     android:textColor="@android:color/darker_gray"
                     android:gravity="center" />
             </LinearLayout>
+
+
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_upload_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Upload Recipe"
+            android:layout_marginTop="16dp"/>
 
         <!-- Story Highlights -->
         <TextView

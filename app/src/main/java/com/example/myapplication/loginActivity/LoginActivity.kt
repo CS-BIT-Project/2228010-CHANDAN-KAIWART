@@ -27,14 +27,14 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
-//        if (FirebaseAuth.getInstance().currentUser == null) {
-//            showLoginForm()
-//        } else {
-//            startActivity(Intent(this, MainActivity::class.java))
-//            finish()
-//        }
-        FirebaseAuth.getInstance().signOut()
-            setContentView(R.layout.activity_login)
+        // Check if user is already logged in
+        if (firebaseAuth.currentUser != null) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish() // Finish LoginActivity so user can't go back to it
+            return
+        }
+
+        setContentView(R.layout.activity_login)
 
         btnLogin = findViewById(R.id.btnLogin)
         btnSignUp = findViewById(R.id.btnSignUp)
@@ -105,7 +105,8 @@ class LoginActivity : AppCompatActivity() {
                             firestore.collection("users").document(userId).set(userMap)
                                 .addOnSuccessListener {
                                     Toast.makeText(this, "Sign Up Successful", Toast.LENGTH_SHORT).show()
-                                    showLoginForm()
+                                    startActivity(Intent(this, MainActivity::class.java))
+                                    finish()
                                 }
                                 .addOnFailureListener {
                                     Toast.makeText(this, "Database Error: ${it.message}", Toast.LENGTH_SHORT).show()

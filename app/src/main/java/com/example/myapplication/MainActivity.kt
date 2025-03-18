@@ -3,7 +3,7 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.myapplication.homePage.HomeFragment
+import com.example.myapplication.homePage.adapters.HomeFragment
 import com.example.myapplication.recipes.SearchFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.myapplication.profilePage.ProfileFragment

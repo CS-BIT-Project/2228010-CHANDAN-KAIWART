@@ -89,9 +89,6 @@ class SearchFragment : Fragment() {
         }
     }
 
-
-
-
     private fun fetchRecipesByIngredients(ingredients: String) {
         val cleanedIngredients = ingredients.trim()
         if (cleanedIngredients.isEmpty()) {
@@ -104,7 +101,7 @@ class SearchFragment : Fragment() {
                 val response = RetrofitInstance.api.getRecipes(cleanedIngredients, numResults, API_KEY)
 
                 if (response.isSuccessful) {
-                    val recipesList = response.body() // Agar response list hai toh direct body() lein
+                    val recipesList = response.body() ?: emptyList() // Agar response list hai toh direct body() lein
 
                     withContext(Dispatchers.Main) {
                         if (!recipesList.isNullOrEmpty()) {

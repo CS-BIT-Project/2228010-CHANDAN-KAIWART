@@ -1,8 +1,8 @@
 package com.example.myapplication.recipes
 
+import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import android.content.Context
 
 class ApiKeyManager(context: Context) {
 
@@ -19,15 +19,14 @@ class ApiKeyManager(context: Context) {
     )
 
     fun saveApiKey(key: String) {
-        sharedPreferences.edit().putString(API_KEY, key).apply()
+        sharedPreferences.edit().putString(API_KEY_PREF, key).apply()
     }
 
     fun getApiKey(): String? {
-        return sharedPreferences.getString(API_KEY, null)
+        return sharedPreferences.getString(API_KEY_PREF, null)
     }
 
     companion object {
-        private const val API_KEY = "da561bd9f97347c9af7faae934548b79"
+        private const val API_KEY_PREF = "api_key"
     }
 }
-

@@ -1,6 +1,6 @@
 package com.example.myapplication.repository
 
-import com.example.myapplication.model.Recipe // ✅ Ensure correct Recipe model is used
+import com.example.myapplication.recipes.Recipe
 import com.example.myapplication.recipes.RecipeApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,10 +14,11 @@ class RecipeRepository(
     suspend fun getFeaturedRecipes(count: Int = 5): List<Recipe> = withContext(Dispatchers.IO) {
         try {
             val response = apiService.getRandomRecipes(
-                number = count.toString(),
+                number = count, // ✅ Convert to String if API expects it
                 apiKey = apiKey,
                 tags = "popular"
             )
+
             if (response.isSuccessful) {
                 response.body()?.recipes ?: emptyList()
             } else {
@@ -27,7 +28,7 @@ class RecipeRepository(
             emptyList() // ✅ Handle network failure
         } catch (e: HttpException) {
             emptyList() // ✅ Handle API failure
-        } as List<Recipe>
+        }
     }
 
     suspend fun getTrendingRecipes(count: Int = 10): List<Recipe> = withContext(Dispatchers.IO) {
@@ -37,17 +38,27 @@ class RecipeRepository(
                 number = count,
                 sort = "popularity"
             )
+
             if (response.isSuccessful) {
-                response.body()?.results ?: emptyList()
+                val recipes = response.body()?.results?.mapNotNull { it } ?: emptyList()
+
+                // ✅ Debugging ke liye print karo
+                println("Trending Recipes: $recipes")
+
+                recipes
             } else {
+                println("API Response Failed: ${response.errorBody()?.string()}")
                 emptyList()
             }
         } catch (e: IOException) {
+            println("Network Error: ${e.message}")
             emptyList()
         } catch (e: HttpException) {
+            println("API Error: ${e.message}")
             emptyList()
-        } as List<Recipe>
+        }
     }
+
 
     suspend fun getRecipesByCategory(category: String, count: Int = 10): List<Recipe> = withContext(Dispatchers.IO) {
         try {
@@ -57,7 +68,7 @@ class RecipeRepository(
                 number = count
             )
             if (response.isSuccessful) {
-                response.body()?.results ?: emptyList()
+                response.body()?.results?.mapNotNull { it } ?: emptyList() // ✅ Fix null handling
             } else {
                 emptyList()
             }
@@ -65,7 +76,7 @@ class RecipeRepository(
             emptyList()
         } catch (e: HttpException) {
             emptyList()
-        } as List<Recipe>
+        }
     }
 
     suspend fun getRecipesByFilter(filter: String, count: Int = 10): List<Recipe> = withContext(Dispatchers.IO) {
@@ -95,7 +106,7 @@ class RecipeRepository(
                 )
             }
             if (response.isSuccessful) {
-                response.body()?.results ?: emptyList()
+                response.body()?.results?.mapNotNull { it } ?: emptyList() // ✅ Fix null handling
             } else {
                 emptyList()
             }
@@ -103,6 +114,6 @@ class RecipeRepository(
             emptyList()
         } catch (e: HttpException) {
             emptyList()
-        } as List<Recipe>
+        }
     }
 }

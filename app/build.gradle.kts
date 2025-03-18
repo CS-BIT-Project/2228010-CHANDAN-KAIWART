@@ -1,111 +1,65 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.gms.google.services)
+    id("com.android.application") version "8.9.0"
+    id("org.jetbrains.kotlin.android") version "1.9.22"
+    id("com.google.gms.google-services") version "4.4.2"
 }
 
 android {
     namespace = "com.example.myapplication"
     compileSdk = 35
 
-    buildFeatures {
-        viewBinding = true
-        dataBinding = true
-        buildConfig = true
-    }
-
     defaultConfig {
         applicationId = "com.example.myapplication"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
-        // Secure API Key Fetching
-        val apiKey: String? = project.findProperty("API_KEY") as String?
-        buildConfigField("String", "API_KEY", "\"$apiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        debug {
-            buildConfigField ("String", "SPOONACULAR_API_KEY", "\"6f85b5800520491e8e7a83d6a4d0b4ab\"")
-        }
         release {
-            buildConfigField ("String", "SPOONACULAR_API_KEYY", "\"6f85b5800520491e8e7a83d6a4d0b4ab\"")
-            isMinifyEnabled = false
-            proguardFiles (getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-
-        compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
+
 dependencies {
-    // AndroidX Core Libraries
-    implementation(libs.androidx.core.ktx.v1120)
-    implementation(libs.androidx.appcompat.v161)
-    implementation(libs.androidx.constraintlayout.v214)
-    implementation(libs.androidx.recyclerview)
-
-    // Compose UI Dependencies
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.material)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // Material Design
-    implementation(libs.material.v1100)
-
-    // Image Processing (Glide)
-    implementation(libs.glide.v4151)
-    implementation(libs.androidx.core)
-    annotationProcessor(libs.compiler.v4151)
-
-    // Navigation Components
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-
-    // Other AndroidX Dependencies
-    implementation(libs.androidx.monitor)
-    implementation(libs.androidx.junit.ktx)
-
-    // Networking (Retrofit) - REQUIRED for Spoonacular API
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.8.6")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
+    implementation("androidx.recyclerview:recyclerview:1.1.0")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
-    // ViewModel & LiveData (For MVVM Architecture)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-
-    // Circle Image View (If needed)
-    implementation(libs.circleimageview)
-
-    // Firebase Dependencies (🔥 Using BOM for compatibility)
-    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))  // 🔥 BOM automatically manages versions
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-
-    // ExoPlayer for video playback
-    implementation("com.google.android.exoplayer:exoplayer:2.19.1")
-
-    // Material & AppCompat
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
-
-    implementation ("androidx.security:security-crypto:1.1.0-alpha06")
-
+    implementation("com.android.volley:volley:1.2.1")
+    implementation("com.google.firebase:firebase-auth-ktx:23.2.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.9.1")
+    implementation("com.google.firebase:firebase-storage-ktx:21.0.1")
+    implementation("androidx.security:security-crypto-ktx:1.1.0-alpha03")
+    implementation("androidx.media3:media3-exoplayer:1.5.1")
+    implementation("androidx.media3:media3-ui:1.5.1")
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 }
