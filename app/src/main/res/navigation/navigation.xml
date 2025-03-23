@@ -34,7 +34,7 @@
         android:label="Search"
         tools:layout="@layout/fragment_search">
         <action
-            android:id="@+id/actionSearchFragmentToRecipeDetailFragment"
+            android:id="@+id/actionSearchFragmentToVideoPlayerFragment"
             app:destination="@id/videoPlayerFragment">
             <argument
                 android:name="recipeId"
