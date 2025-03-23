@@ -17,4 +17,15 @@
     <string name="recipe_image">Recipe image</string>
     <string name="category_icon">Category icon</string>
 
+
+        <string name="search_hint">Enter ingredients</string>
+        <string name="search_button">Find Recipes</string>
+        <string name="no_results">No recipes found. Try different ingredients.</string>
+        <string name="error_message">Something went wrong. Please try again.</string>
+        <string name="today_recipe">Today\'s Recipe</string>
+        <string name="popular_recipes">Popular Recipes</string>
+        <string name="ingredients">Ingredients</string>
+        <string name="instructions">Instructions</string>
+
+
 </resources>

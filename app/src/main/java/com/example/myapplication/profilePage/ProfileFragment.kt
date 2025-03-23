@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.myapplication.R
-import com.example.myapplication.profilePage.UploadRecipeFragment
 import com.example.myapplication.settingPage.SettingActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
@@ -48,13 +47,6 @@ class ProfileFragment : Fragment() {
         val settingsButton = view.findViewById<ImageView>(R.id.settings_button)
         val profileEditButton = view.findViewById<ImageView>(R.id.profile_image)
 
-        val uploadRecipeButton = view.findViewById<Button>(R.id.btn_upload_recipe)
-        uploadRecipeButton.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, UploadRecipeFragment()) // Ensure fragment_container exists
-                .addToBackStack(null)
-                .commit()
-        }
 
         val userId = firebaseAuth.currentUser?.uid
         if (userId != null) {

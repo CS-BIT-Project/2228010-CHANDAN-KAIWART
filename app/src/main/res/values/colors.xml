@@ -39,4 +39,14 @@
     <color name="gray_500">#9E9E9E</color>
     <color name="yellow_400">#FFCE44</color>
 
+        <color name="primaryColor">#FF6200EE</color>
+        <color name="primaryDarkColor">#3700B3</color>
+        <color name="accentColor">#03DAC5</color>
+        <color name="textColorPrimary">#212121</color>
+        <color name="textColorSecondary">#757575</color>
+        <color name="iconColor">#FFFFFF</color>
+        <color name="backgroundColor">#FFFFFF</color>
+        <color name="errorColor">#B00020</color>
+
+
 </resources>

@@ -4,18 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/navigation_home">
 
+    <!-- Home Fragment -->
     <fragment
         android:id="@+id/navigation_home"
-        android:label="Search"
-        tools:layout="@layout/fragment_home" />
-    <fragment
-        android:id="@+id/navigation_search"
-        android:label="Search"
-        tools:layout="@layout/search_page" />
+        android:name="com.example.myapplication.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_videoPlayerFragment"
+            app:destination="@id/videoPlayerFragment">
+            <argument
+                android:name="recipeId"
+                app:argType="integer" />
+        </action>
+
+    </fragment>
+
+    <!-- Profile Fragment -->
     <fragment
         android:id="@+id/navigation_profile"
-        android:label="Search"
+        android:name="com.example.myapplication.profilePage.ProfileFragment"
+        android:label="Profile"
         tools:layout="@layout/profile_page" />
 
+    <!-- Search Fragment -->
+    <fragment
+        android:id="@+id/navigation_search"
+        android:name="com.example.myapplication.ui.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/actionSearchFragmentToRecipeDetailFragment"
+            app:destination="@id/videoPlayerFragment">
+            <argument
+                android:name="recipeId"
+                app:argType="integer" /> <!-- Change to string if needed -->
+        </action>
+    </fragment>
 
+    <!-- Video Player Fragment -->
+    <fragment
+        android:id="@+id/videoPlayerFragment"
+        android:name="com.example.myapplication.ui.video.VideoPlayerFragment"
+        android:label="Video Player"
+        tools:layout="@layout/fragment_recipe_detail">
+        <argument
+            android:name="recipeId"
+            app:argType="integer" /> <!-- Change to string if needed -->
+        <action
+            android:id="@+id/action_recipeDetailFragment_self"
+            app:destination="@id/videoPlayerFragment" />
+    </fragment>
 </navigation>
