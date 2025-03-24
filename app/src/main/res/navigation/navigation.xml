@@ -50,7 +50,10 @@
         tools:layout="@layout/fragment_recipe_detail">
         <argument
             android:name="recipeId"
-            app:argType="integer" /> <!-- Change to string if needed -->
+            app:argType="integer" />
+        <argument
+            android:name="videoUrl"
+            app:argType="string" />
         <action
             android:id="@+id/action_recipeDetailFragment_self"
             app:destination="@id/videoPlayerFragment" />
