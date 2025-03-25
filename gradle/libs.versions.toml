@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.0"
+agp = "8.9.1"
 androidxJunit = "1.1.5"
 androidxNavigationFragmentKtx = "2.8.6"
 androidxNavigationUiKtx = "2.8.6"

@@ -3,53 +3,44 @@ package com.example.myapplication.ui.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.myapplication.R
 import com.example.myapplication.data.model.Recipe
-import com.example.myapplication.util.loadImage
+import com.example.myapplication.ui.search.SearchFragmentDirections
 
-class RecipeAdapter(private val onRecipeClick: (Recipe) -> Unit) :
-    ListAdapter<Recipe, RecipeAdapter.RecipeViewHolder>(RecipeDiffCallback()) {
+class RecipeAdapter(private val onVideoClick: (Recipe) -> Unit) : RecyclerView.Adapter<RecipeAdapter.ViewHolder>() {
+    private val recipes = mutableListOf<Recipe>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
+    fun submitList(newRecipes: List<Recipe>) {
+        recipes.clear()
+        recipes.addAll(newRecipes)
+        notifyDataSetChanged()
+    }
+
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val image: ImageView = view.findViewById(R.id.recipeImage)
+        val title: TextView = view.findViewById(R.id.recipeTitle)
+        val videoBtn: Button = view.findViewById(R.id.watchVideoBtn)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recipe, parent, false)
-        return RecipeViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
-        val recipe = getItem(position)
-        holder.bind(recipe)
-        holder.itemView.setOnClickListener {
-            onRecipeClick(recipe) // Pass Recipe object
-        }
-
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val recipe = recipes[position]
+        holder.title.text = recipe.title
+        Glide.with(holder.image.context).load(recipe.image).into(holder.image)
+        holder.videoBtn.setOnClickListener { onVideoClick(recipe) }
     }
 
-
-
-    class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageView: ImageView = itemView.findViewById(R.id.recipeImage)
-        private val titleTextView: TextView = itemView.findViewById(R.id.recipeTitle)
-        private val infoTextView: TextView = itemView.findViewById(R.id.recipeInfo)
-
-        fun bind(recipe: Recipe) {
-            titleTextView.text = recipe.title
-            imageView.loadImage(recipe.image)
-            infoTextView.text = "${recipe.readyInMinutes} min | ${recipe.servings} servings"
-        }
-    }
-
-    class RecipeDiffCallback : DiffUtil.ItemCallback<Recipe>() {
-        override fun areItemsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Recipe, newItem: Recipe): Boolean {
-            return oldItem == newItem
-        }
-    }
+    override fun getItemCount(): Int = recipes.size
 }

@@ -3,14 +3,12 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.example.myapplication.profilePage.ProfileFragment
-import com.google.firebase.FirebaseApp
 import com.example.myapplication.ui.home.HomeFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.myapplication.ui.profile.ProfileFragment
 import com.example.myapplication.ui.search.SearchFragment
-import dagger.hilt.android.AndroidEntryPoint
+import com.google.firebase.FirebaseApp
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +28,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home -> HomeFragment()
                 R.id.navigation_search -> SearchFragment()
                 R.id.navigation_profile -> ProfileFragment()
-                else -> HomeFragment()
+                else -> SearchFragment()
             }
             loadFragment(selectedFragment)
             true
@@ -39,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment, fragment)  // ✅ Corrected
+            .replace(R.id.nav_host_fragment, fragment)
             .commit()
     }
 }

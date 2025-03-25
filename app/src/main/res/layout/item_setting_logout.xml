@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="16dp"
-    android:background="?attr/selectableItemBackground"
-    android:gravity="center">
+    android:padding="16dp">
 
     <Button
         android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log Out"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
-
-</LinearLayout>
+        android:backgroundTint="#F44336"
+        android:text="Logout"
+        android:textColor="@android:color/white" />
+</FrameLayout>
