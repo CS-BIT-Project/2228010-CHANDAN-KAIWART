@@ -1,139 +1,88 @@
 package com.example.myapplication.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.data.api.RetrofitClient
+import com.example.myapplication.data.model.Recipe
 import com.example.myapplication.ui.adapters.RecipeAdapter
-import com.example.myapplication.util.Resource
-import com.example.myapplication.util.hide
-import com.example.myapplication.util.loadImage
-import com.example.myapplication.util.show
-import dagger.hilt.android.AndroidEntryPoint
+import com.example.myapplication.ui.video.VideoPlayerFragment
+import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
-    private val viewModel: HomeViewModel by viewModels()
-    private lateinit var recipeAdapter: RecipeAdapter
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: RecipeAdapter
+    private val recipes = mutableListOf<Recipe>()
 
-    private lateinit var progressBar: ProgressBar
-    private lateinit var errorText: TextView
-    private lateinit var popularRecipesList: RecyclerView
-    private lateinit var todayRecipeCard: CardView
-    private lateinit var todayRecipeImage: ImageView
-    private lateinit var todayRecipeTitle: TextView
-    private lateinit var todayRecipeInfo: TextView
+    private val spoonApi = RetrofitClient.spoonacularApi
+    private val youtubeApi = RetrofitClient.youtubeApi
+    private val spoonKey = "6b4d3d230a97483b9957d211992331b4"
+    private val youtubeKey = "AIzaSyC6RzxUxRo5I190eSpotjN5DVlQTSN3q1k"
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize views
-        progressBar = view.findViewById(R.id.progressBar)
-        errorText = view.findViewById(R.id.errorText)
-        popularRecipesList = view.findViewById(R.id.popularRecipesList)
-        todayRecipeCard = view.findViewById(R.id.todayRecipeCard)
-        todayRecipeImage = view.findViewById(R.id.todayRecipeImage)
-        todayRecipeTitle = view.findViewById(R.id.todayRecipeTitle)
-        todayRecipeInfo = view.findViewById(R.id.todayRecipeInfo)
+        recyclerView = view.findViewById(R.id.homeRecipeRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = RecipeAdapter { recipe -> searchVideoAndNavigate(recipe.title) }
+        recyclerView.adapter = adapter
 
-        setupRecyclerView()
-        setupObservers()
-        setupTodayRecipeCard()
+        fetchRandomRecipes()
     }
 
-    private fun setupRecyclerView() {
-        recipeAdapter = RecipeAdapter { recipe ->
-            val action = HomeFragmentDirections.actionHomeFragmentToVideoPlayerFragment(recipe.id, recipe.videoUrl ?: "")
-            findNavController().navigate(action)
-        }
-
-        popularRecipesList.apply {
-            adapter = recipeAdapter
-            layoutManager = LinearLayoutManager(activity)
-        }
-    }
-
-
-
-    private fun setupTodayRecipeCard() {
-        todayRecipeCard.setOnClickListener {
-            viewModel.todayRecipe.value?.data?.let { recipe ->
-                navigateToVideoPlayer(recipe.id)
-            } ?: run {
-                Toast.makeText(requireContext(), "No recipe available", Toast.LENGTH_SHORT).show()
+    private fun fetchRandomRecipes() {
+        lifecycleScope.launch {
+            try {
+                val response = spoonApi.getRandomRecipes(10, spoonKey)
+                recipes.clear()
+                recipes.addAll(response.recipes)
+                adapter.submitList(recipes.toList())
+            } catch (e: Exception) {
+                Log.e("HomeFragment", "Failed to fetch recipes: ${e.message}")
+                Toast.makeText(requireContext(), "Failed to load home recipes", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun setupObservers() {
-        viewModel.randomRecipes.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Success -> {
-                    progressBar.hide()
-                    errorText.hide()
-                    resource.data?.let { recipes ->
-                        recipeAdapter.submitList(recipes)
-                    }
+    private fun searchVideoAndNavigate(title: String) {
+        lifecycleScope.launch {
+            try {
+                val response = youtubeApi.searchVideos(
+                    query = "$title recipe",
+                    apiKey = youtubeKey
+                )
+
+                val videoId = response.items.firstOrNull()?.id?.videoId
+
+                if (!videoId.isNullOrEmpty()) {
+                    val fragment = VideoPlayerFragment.newInstance(videoId)
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerView, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                } else {
+                    Toast.makeText(requireContext(), "No video found for $title", Toast.LENGTH_SHORT).show()
                 }
-                is Resource.Error -> {
-                    progressBar.hide()
-                    errorText.show()
-                    errorText.text = resource.message ?: "An unknown error occurred"
-                }
-                is Resource.Loading -> {
-                    progressBar.show()
-                    errorText.hide()
-                }
+            } catch (e: Exception) {
+                Log.e("HomeFragmen", "YouTube API Error: ${e.message}", e)
+                Toast.makeText(requireContext(), "Failed to load video: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
-
-        viewModel.todayRecipe.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Success -> {
-                    resource.data?.let { recipe ->
-                        todayRecipeImage.loadImage(recipe.image)
-                        todayRecipeTitle.text = recipe.title
-                        todayRecipeInfo.text = "${recipe.readyInMinutes} min | ${recipe.servings} servings"
-                    }
-                }
-                is Resource.Error -> {
-                    errorText.show()
-                    errorText.text = resource.message ?: "Failed to load today's recipe"
-                }
-                is Resource.Loading -> {
-                    todayRecipeTitle.text = "Loading..."
-                }
-            }
-        }
-    }
-
-    private fun navigateToVideoPlayer(recipeId: Int?) {
-        if (recipeId == null || recipeId <= 0) {
-            Toast.makeText(requireContext(), "Invalid Recipe ID", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val recipe = viewModel.randomRecipes.value?.data?.find { it.id == recipeId }
-        val action = HomeFragmentDirections.actionHomeFragmentToVideoPlayerFragment(recipeId, recipe?.videoUrl ?: "")
-        findNavController().navigate(action)
     }
 }

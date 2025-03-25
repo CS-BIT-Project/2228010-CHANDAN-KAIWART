@@ -1,165 +1,125 @@
 package com.example.myapplication.ui.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.EditText
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.data.api.RetrofitClient
+import com.example.myapplication.data.api.SpoonacularApiService
+import com.example.myapplication.data.api.YouTubeApiService
 import com.example.myapplication.data.model.Recipe
 import com.example.myapplication.ui.adapters.RecipeAdapter
-import com.example.myapplication.util.Resource
-import com.google.android.material.textfield.TextInputEditText
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import com.example.myapplication.ui.video.VideoPlayerFragment
+import com.example.myapplication.data.api.RetrofitClient.youtubeApi
+import com.example.myapplication.data.api.RetrofitClient.spoonacularApi
+
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
-    private val viewModel: SearchViewModel by viewModels()
-    private lateinit var recipeAdapter: RecipeAdapter
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: RecipeAdapter
+    private val recipes = mutableListOf<Recipe>()
 
-    private lateinit var searchInput: TextInputEditText
-    private lateinit var searchButton: Button
-    private lateinit var searchResultsList: RecyclerView
-    private lateinit var progressBar: ProgressBar
-    private lateinit var noResultsText: TextView
-    private lateinit var errorText: TextView
+    private val spoonApi = spoonacularApi
 
-    private var searchJob: Job? = null
+    private val youtubeApi = RetrofitClient.youtubeApi
+
+
+    private val spoonKey = "6b4d3d230a97483b9957d211992331b4"
+    private val youtubeKey = "AIzaSyC6RzxUxRo5I190eSpotjN5DVlQTSN3q1k"
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize views
-        searchInput = view.findViewById(R.id.searchInput)
-        searchButton = view.findViewById(R.id.searchButton)
-        searchResultsList = view.findViewById(R.id.searchResultsList)
-        progressBar = view.findViewById(R.id.progressBar)
-        noResultsText = view.findViewById(R.id.noResultsText)
-        errorText = view.findViewById(R.id.errorText)
-
-        setupRecyclerView()
-        setupSearchListener()
-        setupObservers()
-
-        viewModel.fetchRandomRecipes(50)
-    }
-
-    private fun setupRecyclerView() {
-        recipeAdapter = RecipeAdapter { recipe ->
-            navigateToRecipeDetail(recipe) // Pass the entire Recipe object
+        // Make sure these IDs exist in fragment_search.xml
+        recyclerView = view.findViewById(R.id.recipeRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter = RecipeAdapter { recipe ->
+            searchVideoAndNavigate(recipe.title)
         }
+        recyclerView.adapter = adapter
 
-        searchResultsList.apply {
-            adapter = recipeAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-        }
-    }
+        fetchRandomRecipes()
 
-    private fun setupSearchListener() {
-        searchInput.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                performSearch()
-                return@setOnEditorActionListener true
-            }
-            false
-        }
+        val searchInput = view.findViewById<EditText>(R.id.ingredientInput)
+        val searchBtn = view.findViewById<Button>(R.id.searchBtn)
 
-        searchButton.setOnClickListener {
-            performSearch()
-        }
-    }
-
-    private fun performSearch() {
-        val query = searchInput.text.toString().trim()
-
-        if (query.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter a search query", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        searchJob?.cancel()
-        searchJob = lifecycleScope.launch {
-            delay(100) // Debounce API calls
-            viewModel.searchRecipes(query)
-        }
-    }
-
-    private fun setupObservers() {
-        viewModel.searchResults.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Success -> {
-                    updateUI(
-                        isLoading = false,
-                        recipes = resource.data.orEmpty(),
-                        errorMessage = null
-                    )
-                }
-                is Resource.Error -> {
-                    updateUI(
-                        isLoading = false,
-                        recipes = emptyList(),
-                        errorMessage = resource.message ?: "An unknown error occurred"
-                    )
-                }
-                is Resource.Loading -> {
-                    updateUI(isLoading = true)
-                }
+        searchBtn.setOnClickListener {
+            val query = searchInput.text.toString().trim()
+            if (query.isNotEmpty()) {
+                fetchRecipesByIngredients(query)
             }
         }
     }
 
-    private fun updateUI(
-        isLoading: Boolean,
-        recipes: List<Recipe> = emptyList(),
-        errorMessage: String? = null
-    ) {
-        progressBar.isVisible = isLoading
-        searchResultsList.isVisible = !isLoading && recipes.isNotEmpty()
-        noResultsText.isVisible = !isLoading && recipes.isEmpty()
-        errorText.isVisible = !isLoading && errorMessage != null
-
-        if (errorMessage != null) {
-            errorText.text = errorMessage
+    private fun fetchRandomRecipes() {
+        lifecycleScope.launch {
+            try {
+                val response = spoonApi.getRandomRecipes(10, spoonKey)
+                recipes.clear()
+                recipes.addAll(response.recipes)
+                adapter.submitList(recipes.toList())
+            } catch (e: Exception) {
+                Log.e("SearchFragment", "Error fetching random recipes: ${e.message}")
+                Toast.makeText(requireContext(), "Failed to load recipes", Toast.LENGTH_SHORT).show()
+            }
         }
-
-        // Ensure RecipeAdapter has a submitList method
-        recipeAdapter.submitList(recipes)
     }
 
-    private fun navigateToRecipeDetail(recipe: Recipe) {
-        // Ensure recipeId is retrieved from the recipe object
-        val recipeId = recipe.id
+    private fun fetchRecipesByIngredients(ingredients: String) {
+        lifecycleScope.launch {
+            try {
+                val result = spoonApi.getRecipesByIngredients(ingredients, 10, spoonKey)
+                recipes.clear()
+                recipes.addAll(result)
+                adapter.submitList(recipes.toList())
+            } catch (e: Exception) {
+                Log.e("SearchFragment", "Error fetching recipes: ${e.message}")
+                Toast.makeText(requireContext(), "Failed to fetch recipes", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
-        // Use the correct action and pass the required arguments
-        val action = SearchFragmentDirections.actionSearchFragmentToVideoPlayerFragment(
-            recipeId = recipeId, // Pass recipeId
-            videoUrl = recipe.videoUrl ?: "" // Provide a default value for videoUrl
-        )
+    private fun searchVideoAndNavigate(title: String) {
+        lifecycleScope.launch {
+            try {
+                val response = youtubeApi.searchVideos(
+                    query = "$title recipe",
+                    apiKey = youtubeKey
+                )
 
-        // Navigate to the destination
-        findNavController().navigate(action)
+                val videoId = response.items.firstOrNull()?.id?.videoId
+
+                if (!videoId.isNullOrEmpty()) {
+                    val fragment = VideoPlayerFragment.newInstance(videoId)
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.searchFragmentLayout, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                } else {
+                    Toast.makeText(requireContext(), "No video found for $title", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("SearchFragment", "YouTube API Error: ${e.message}", e)
+                Toast.makeText(requireContext(), "Failed to load video: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }

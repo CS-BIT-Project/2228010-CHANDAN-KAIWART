@@ -3,9 +3,7 @@ package com.example.myapplication
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
-import dagger.hilt.android.HiltAndroidApp
 
-@HiltAndroidApp
 class RecipeFinderApplication : Application() {
 
     override fun onCreate() {

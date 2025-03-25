@@ -4,24 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:paddingVertical="8dp">
 
-    <TextView
-        android:id="@+id/ingredientName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@id/ingredientAmount"
+    <ImageView
+        android:id="@+id/ingredientImageView"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="Ingredient Image"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/ingredientNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ingredientImageView"
+        app:layout_constraintTop_toTopOf="@id/ingredientImageView"
         tools:text="Olive Oil" />
 
     <TextView
-        android:id="@+id/ingredientAmount"
-        android:layout_width="wrap_content"
+        android:id="@+id/ingredientAmountTextView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ingredientImageView"
+        app:layout_constraintTop_toBottomOf="@id/ingredientNameTextView"
         tools:text="2 tablespoons" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

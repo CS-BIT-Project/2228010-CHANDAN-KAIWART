@@ -6,7 +6,6 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-kapt")
     kotlin("kapt")
-    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -21,7 +20,7 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "SPOONACULAR_API_KEY", "\"de5b939f46644c9a98c4f78edda86983\"")
+        buildConfigField("String", "SPOONACULAR_API_KEY", "\"6b4d3d230a97483b9957d211992331b4\"")
 
     }
 
@@ -81,12 +80,11 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
     implementation("com.android.volley:volley:1.2.1")
 
-    // Dependency Injection (Hilt) - Fixed version
-    implementation("com.google.dagger:hilt-android:2.50")
-    kapt("com.google.dagger:hilt-compiler:2.50")
 
     // Testing Libraries
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 }
+
+

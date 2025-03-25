@@ -4,68 +4,45 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.common.MediaItem
-import androidx.media3.ui.PlayerView
-import androidx.core.net.toUri
 import com.example.myapplication.R
 
 class VideoPlayerFragment : Fragment() {
 
-    private val args: VideoPlayerFragmentArgs by navArgs()
-    private lateinit var playerView: PlayerView
-    private var exoPlayer: ExoPlayer? = null
+    companion object {
+        private const val ARG_VIDEO_ID = "video_id"
+
+        fun newInstance(videoId: String): VideoPlayerFragment {
+            val fragment = VideoPlayerFragment()
+            val args = Bundle()
+            args.putString(ARG_VIDEO_ID, videoId)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_recipe_detail, container, false)
+    ): View? {
+        return inflater.inflate(R.layout.fragment_video_player, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        playerView = view.findViewById(R.id.playerView)
-        initializeExoPlayer()
+        val videoId = arguments?.getString(ARG_VIDEO_ID) ?: return
+        val webView = view.findViewById<WebView>(R.id.videoWebView)
 
-        val videoUrl = args.videoUrl // Get the video URL from arguments
-        if (videoUrl.isNotEmpty()) {
-            playVideo(videoUrl)
-        } else {
-            showError("No video URL available for this recipe")
-        }
-    }
+        webView.webViewClient = WebViewClient()
+        val settings: WebSettings = webView.settings
+        settings.javaScriptEnabled = true
+        settings.domStorageEnabled = true
 
-    private fun initializeExoPlayer() {
-        exoPlayer = ExoPlayer.Builder(requireContext()).build().apply {
-            playerView.player = this
-        }
-    }
-
-    private fun playVideo(videoUrl: String) {
-        try {
-            val mediaItem = MediaItem.fromUri(videoUrl.toUri())
-            exoPlayer?.apply {
-                setMediaItem(mediaItem)
-                prepare()
-                playWhenReady = true
-            }
-        } catch (e: Exception) {
-            showError("Failed to play video: ${e.message}")
-        }
-    }
-
-    private fun showError(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        exoPlayer?.release()
-        exoPlayer = null
+        val videoUrl = "https://www.youtube.com/embed/$videoId"
+        webView.loadUrl(videoUrl)
     }
 }

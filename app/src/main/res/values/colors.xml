@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="my_light_primary">#6200EE</color> <!-- Change this to your desired color -->
 
 
     <!-- Custom Color -->
     <color name="custom_color">#FF5722</color> <!-- Example: Deep Orange -->
 
-    <!-- Common Colors -->
-    <color name="colorPrimary">#6200EE</color> <!-- Example: Purple -->
-    <color name="colorPrimaryDark">#3700B3</color> <!-- Example: Dark Purple -->
-    <color name="colorAccent">#03DAC5</color> <!-- Example: Teal -->
-
-
-    <color name="gray">#808080</color>
-    <color name="light_gray">#D3D3D3</color>
     <color name="dark_gray">#A9A9A9</color>
     <color name="transparent">#00000000</color> <!-- Transparent Color -->
 
@@ -48,5 +38,21 @@
         <color name="backgroundColor">#FFFFFF</color>
         <color name="errorColor">#B00020</color>
 
+        <color name="colorPrimary">#FF6200EE</color>
+        <color name="colorPrimaryDark">#FF3700B3</color>
+        <color name="colorAccent">#FF03DAC5</color>
+        <color name="black">#FF000000</color>
+        <color name="white">#FFFFFFFF</color>
+        <color name="gray">#FF757575</color>
+        <color name="light_gray">#FFEEEEEE</color>
+        <color name="error">#FFD32F2F</color>
+
+    <!-- Colors for the authentication screens -->
+    <color name="background_color">#F5F5F5</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="accent_color">#4CAF50</color>
+    <color name="success_green">#4CAF50</color>
+    <color name="error_red">#F44336</color>
 
 </resources>

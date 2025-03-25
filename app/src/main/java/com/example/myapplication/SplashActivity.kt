@@ -9,7 +9,9 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.loginActivity.LoginActivity
+import com.example.myapplication.loginActivity.AuthActivity
+import com.example.myapplication.loginActivity.LoginFragment
+import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,7 +20,7 @@ class SplashActivity : AppCompatActivity() {
 
         val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
         val imageView = findViewById<ImageView>(R.id.splash_load_img)
-
+        lateinit var auth: FirebaseAuth
         // Animate progress bar from 0 to 100
         val progressAnimator = ObjectAnimator.ofInt(progressBar, "progress", 0, 100).apply {
             duration = 3000 // Match with delay
@@ -35,9 +37,21 @@ class SplashActivity : AppCompatActivity() {
         rotateAnimator.start()
 
         // Navigate to LoginActivity after progress bar completes
+        auth = FirebaseAuth.getInstance()
+
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, LoginActivity::class.java))
+
+            val currentUser = auth.currentUser
+
+            if (currentUser != null) {
+                // User is already logged in, go to MainActivity
+                startActivity(Intent(this, MainActivity::class.java))
+            } else {
+                // User is not logged in, go to AuthActivity which hosts Login/Signup fragments
+                startActivity(Intent(this, AuthActivity::class.java))
+            }
+
             finish()
-        }, 3000) // 3 seconds delay
+        }, 2000) // 2 seconds delay
     }
 }
