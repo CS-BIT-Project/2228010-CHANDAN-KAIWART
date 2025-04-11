@@ -42,7 +42,7 @@ class VideoPlayerFragment : Fragment() {
         settings.javaScriptEnabled = true
         settings.domStorageEnabled = true
 
-        val videoUrl = "https://www.youtube.com/embed/$videoId"
+        val videoUrl = "https://www.youtube.com/embed/$videoId?autoplay=1&rel=0"
         webView.loadUrl(videoUrl)
     }
 }

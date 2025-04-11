@@ -2,35 +2,50 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="4dp"
-    android:padding="8dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="12dp"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="16dp"
+    android:backgroundTint="#FFFFFF"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="12dp">
 
+        <!-- Recipe Image with rounded corners -->
         <ImageView
             android:id="@+id/recipeImage"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop" />
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_image"
+            android:clipToOutline="true" />
 
+        <!-- Recipe Title -->
         <TextView
             android:id="@+id/recipeTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Recipe Title"
-            android:textSize="18sp"
+            android:text="🍽️ Delicious Paneer Butter Masala"
+            android:textSize="20sp"
+            android:textColor="#212121"
             android:textStyle="bold"
-            android:paddingTop="8dp" />
+            android:paddingTop="10dp"
+            android:paddingBottom="4dp" />
 
+        <!-- Watch Video Button -->
         <Button
             android:id="@+id/watchVideoBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Watch Video"
-            android:layout_marginTop="4dp" />
+            android:text="▶️ Watch Recipe Video"
+            android:background="@drawable/rounded_button"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:padding="12dp"
+            android:elevation="4dp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

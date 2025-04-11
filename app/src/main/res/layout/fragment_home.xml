@@ -5,23 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#FAFAFA"
     android:padding="16dp">
 
+    <!-- Fancy Header -->
     <TextView
         android:id="@+id/homeTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Featured Recipes"
-        android:textSize="22sp"
+        android:text="🍽️ Featured Recipes"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="12dp" />
+        android:textColor="#FF5722"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/homeRecipeRecyclerView"
+    <!-- A Card-style container with slight elevation -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp" />
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="@drawable/rounded_card"
+        android:elevation="4dp"
+        android:clipToPadding="false">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homeRecipeRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
+    </LinearLayout>
 </LinearLayout>

@@ -4,25 +4,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="16dp"
+    android:background="#FAFAFA">
 
+    <!-- Search Input Field -->
     <EditText
         android:id="@+id/ingredientInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter ingredients (comma separated)"
-        android:inputType="text" />
+        android:hint="🔍 Enter ingredients (e.g., tomato, onion)"
+        android:padding="12dp"
+        android:background="@drawable/rounded_edit_text"
+        android:textColor="#212121"
+        android:textSize="16sp"
+        android:inputType="text"
+        android:layout_marginBottom="12dp" />
 
+    <!-- Search Button -->
     <Button
         android:id="@+id/searchBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search Recipes" />
+        android:text="🍳 Search Recipes"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_button"
+        android:padding="12dp"
+        android:elevation="2dp"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Recipes List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recipeRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingTop="8dp" />
+        android:paddingTop="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
 </LinearLayout>
