@@ -44,7 +44,7 @@ An Android application that helps users discover, save, and manage delicious rec
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/recipe-app.git
+   git clone https://github.com/CS-BIT-Project/2228010-CHANDAN-KAIWART
 2. Open in Android Studio
 
 3. Add your API keys:
